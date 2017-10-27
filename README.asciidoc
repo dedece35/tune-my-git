@@ -1,0 +1,49 @@
+ _____                                             ___       _   
+(_   _)                                           (  _`\  _ ( )_ 
+  | | _   _   ___     __       ___ ___   _   _    | ( (_)(_)| ,_)
+  | |( ) ( )/' _ `\ /'__`\   /' _ ` _ `\( ) ( )   | |___ | || |  
+  | || (_) || ( ) |(  ___/   | ( ) ( ) || (_) |   | (_, )| || |_ 
+  (_)`\___/'(_) (_)`\____)   (_) (_) (_)`\__, |   (____/'(_)`\__)
+                                        ( )_| |                  
+                                        `\___/'                  
+
+// Génération du titre avec ASCII Art GENERATOR
+// http://patorjk.com/software/taag/#p=display&f=Puffy&t=Tune%20my%20Git
+
+A quoi pourrait me servir ce truc ?
+==
+ben ... comme son nom l'indique ... à tuner votre GIT ! ...
+
+Plus sérieusement, cela a pour objectif de basculer d'un compte GIT à une autre (ce qu'on appelera "profil GIT")
+La plupart des développeurs possèdent plusieurs comptes GIT : 
+* un compte dans son entreprise
+* un compte pour l'open-source sur github
+* etc ...
+Quand on veut basculer d'un compte GIT à l'autre, c'est un peu pénible (gitconfig, conf ssh, trousseau de clés)
+
+Ce script a donc pour but de switcher d'un "profil GIT" à un autre le plus simplement possible
+
+Comment ça marche ?
+==
+Il suffit de lancer le script `tune-my-git.sh` avec les _bonnes options_
+mouais, et ... quelles sont les _bonnes options_ ... ?
+Et bien, laissez-vous guider par le script ... il vous indiquera le chemin !
+
+Description technique
+==
+Le script shell active un profil passé en paramètre.
+Chaque profil correspond à un sous-répertoire du répertoire `profiles`
+Chaque profil doit contenir un ensemble de fichiers obligatoires afin qu'il soit activé (cfplus bas)
+
+Le script Shell
+===
+Au lancement du script (sans aucune option), l'aide s'affichera
+A la moindre erreur, le script vous guide sur ce qui ne va pas et ce qu'il faut faire pour corriger le pb
+
+Liste des fichiers obligatoires 'un profil
+===
+* fichiers SSH :
+** id_rsa : fichier de clé privé pour la connexion au serveur GIT
+** id_rsa.pub : fichier de clé publique pour la connexion au serveur GIT (clé publique déclarée dans la conf du serveur)
+* fichier conf GIT :
+** .gitconfig : fichier de conf GIT contenant notamment le nom et le mail du compte GIT
