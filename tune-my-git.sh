@@ -1,25 +1,16 @@
 #!/bin/bash
 
 #
-# TUNE MY GIT
-# 
-# Objectif :
-#   pouvoir facilement changer de profil GIT afin de pouvoir commiter sous différentes identités
-#
-# Techniquement :
-#   - modifier le .gitconfig
-#   - modifier les fichiers SSH
-#
 # AUTEUR :
 #   David DE CARVALHO
 #   @dedece35
 #   27/10/2017
 #
 
-is_backup_actif=0
+is_backup_actif=1
 dir_script=`dirname "$0"`
 dir_profil="$dir_script/profiles"
-option_backup_files="--backup-files"
+option_disable_backups="--disable-backups"
 
 afficherAide() {
     echo ""
@@ -37,7 +28,7 @@ afficherAide() {
     echo -e "\nUsage :"
     echo -e "  tune-my-git.sh <OPTIONS> <PROFIL>"
     echo -e "\nOPTIONS : "
-    echo -e "$option_backup_files : active le backup des fichiers remplacées (backup avec extension du type '.bkp-<timestamp>'"
+    echo -e "$option_disable_backups : désactive le backup des fichiers remplacées (backup avec extension du type '.bkp-<timestamp>'"
     echo -e "PROFIL : nom du profil à activer"
     listerProfiles
     exit 1
@@ -110,9 +101,9 @@ fi
 profile_cur=$1
 if [[ $# == 2 ]]
 then 
-    if [[ "$1" == "$option_backup_files" ]]
+    if [[ "$1" == "$option_disable_backups" ]]
     then
-        is_backup_actif=1
+        is_backup_actif=0
         profile_cur=$2
     else
         echo -e "\nERREUR => L'option '$1' N'est PAS une option valide"
@@ -122,7 +113,7 @@ fi
 
 verifierProfile $profile_cur
 
-echo -e "\nActivation du profil GIT '$profile_cur' : "
+echo -e "\nActivation du profil GIT \033[1;43m   '$profile_cur'   \033[0m : "
 
 if [[ ! -d ~/.ssh ]]
 then
@@ -134,6 +125,8 @@ timestamp=$(awk 'BEGIN {srand(); print srand()}')
 
 if [[ $is_backup_actif == 1 ]]
 then
+    echo -e "\033[5;42m   WARNING   \033[0m mode backup actif (par défaut) : pour le désactiver, utiliser l'option '$option_disable_backups'" ;
+
     echo "- Backup du fichier SSH 'id_rsa' (dans répertoire ~/.ssh)"
     cp ~/.ssh/id_rsa ~/.ssh/id_rsa.bkp-$timestamp
 
