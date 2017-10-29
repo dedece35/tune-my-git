@@ -11,6 +11,8 @@ is_backup_actif=1
 dir_script=`dirname "$0"`
 dir_profil="$dir_script/profiles"
 option_disable_backups="--disable-backups"
+option_help1="-h"
+option_help2="--help"
 
 afficherAide() {
     echo ""
@@ -29,6 +31,8 @@ afficherAide() {
     echo -e "  tune-my-git.sh <OPTIONS> <PROFIL>"
     echo -e "\nOPTIONS : "
     echo -e "$option_disable_backups : désactive le backup des fichiers remplacées (backup avec extension du type '.bkp-<timestamp>'"
+    echo -e "$option_help1 : affiche l'aide du script"
+    echo -e "$option_help2 : affiche l'aide du script"
     echo -e "PROFIL : nom du profil à activer"
     listerProfiles
     exit 1
@@ -98,6 +102,12 @@ then
     afficherAide
 fi
 
+# verification de l'option help
+if [[ "$1" == "$option_help1" || "$1" == "$option_help2" ]]
+then
+    afficherAide
+fi
+
 profile_cur=$1
 if [[ $# == 2 ]]
 then 
@@ -106,7 +116,7 @@ then
         is_backup_actif=0
         profile_cur=$2
     else
-        echo -e "\n\033[33;41m   ERREUR   \033[0m L'option '$1' N'est PAS une option valide"
+        echo -e "\n\033[33;41m   ERREUR   \033[0m L'option '$1' N'est PAS une option valide avec l'utilisation d'un profil"
         afficherAide
     fi
 fi 
