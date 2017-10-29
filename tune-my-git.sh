@@ -39,14 +39,14 @@ listerProfiles() {
 
     if [[ ! -d "$dir_profil" ]]
     then
-        echo -e "AUCUN\n   => Le répertoire '$dir_profil' est obligatoire et doit contenir au moins un sous-répertoire avec le nom d'un profil\n"
+        echo -e "AUCUN\n   => \033[33;41m   ERREUR   \033[0m Le répertoire '$dir_profil' est obligatoire et doit contenir au moins un sous-répertoire avec le nom d'un profil\n"
         exit 1
     fi
 
     lstProfiles=`ls $dir_profil`
     if [[ "$lstProfiles" == "" ]]
     then
-        echo -e "AUCUN\n   => Le répertoire '$dir_profil' doit contenir au moins un sous-répertoire avec le nom d'un profil\n"
+        echo -e "AUCUN\n   => \033[33;41m   ERREUR   \033[0m Le répertoire '$dir_profil' doit contenir au moins un sous-répertoire avec le nom d'un profil\n"
         exit 1
     fi
 
@@ -57,14 +57,14 @@ verifierProfile() {
 
     if [[ ! -d "$dir_profil" ]]
     then
-        echo -e "\nERREUR => Le répertoire '$dir_profil' est obligatoire et doit contenir au moins un sous-répertoire avec le nom d'un profil\n"
+        echo -e "\n\033[33;41m   ERREUR   \033[0m Le répertoire '$dir_profil' est obligatoire et doit contenir au moins un sous-répertoire avec le nom d'un profil\n"
         exit 1
     fi
 
     dir_profil_cur="$dir_profil/$1"
     if [[ ! -d "$dir_profil_cur" ]]
     then
-        echo -e "\nERREUR => Le profil '$1' N'existe PAS (répertoire '$dir_profil_cur')"
+        echo -e "\n\033[33;41m   ERREUR   \033[0m Le profil '$1' N'existe PAS (répertoire '$dir_profil_cur')"
         listerProfiles
         exit 1
     fi
@@ -72,21 +72,21 @@ verifierProfile() {
     fic_idrsa_cur="$dir_profil_cur/id_rsa"
     if [[ ! -f "$fic_idrsa_cur" ]]
     then
-        echo -e "\nERREUR => Le profil '$1' est INVALIDE : le fichier 'id_rsa' est manquant (fichier '$fic_idrsa_cur')\n"
+        echo -e "\n\033[33;41m   ERREUR   \033[0m Le profil '$1' est INVALIDE : le fichier 'id_rsa' est manquant (fichier '$fic_idrsa_cur')\n"
         exit 1
     fi
 
     fic_idrsapub_cur="$dir_profil_cur/id_rsa.pub"
     if [[ ! -f "$fic_idrsapub_cur" ]]
     then
-        echo -e "\nERREUR => Le profil '$1' est INVALIDE : le fichier 'id_rsa.pub' est manquant (fichier '$fic_idrsapub_cur')\n"
+        echo -e "\n\033[33;41m   ERREUR   \033[0m Le profil '$1' est INVALIDE : le fichier 'id_rsa.pub' est manquant (fichier '$fic_idrsapub_cur')\n"
         exit 1
     fi
 
     fic_gitconfig_cur="$dir_profil_cur/.gitconfig"
     if [[ ! -f "$fic_gitconfig_cur" ]]
     then
-        echo -e "\nERREUR => Le profil '$1' est INVALIDE : le fichier '.gitconfig' est manquant (fichier '$fic_gitconfig_cur')\n"
+        echo -e "\n\033[33;41m   ERREUR   \033[0m Le profil '$1' est INVALIDE : le fichier '.gitconfig' est manquant (fichier '$fic_gitconfig_cur')\n"
         exit 1
     fi
 
@@ -106,7 +106,7 @@ then
         is_backup_actif=0
         profile_cur=$2
     else
-        echo -e "\nERREUR => L'option '$1' N'est PAS une option valide"
+        echo -e "\n\033[33;41m   ERREUR   \033[0m L'option '$1' N'est PAS une option valide"
         afficherAide
     fi
 fi 
@@ -125,7 +125,7 @@ timestamp=$(awk 'BEGIN {srand(); print srand()}')
 
 if [[ $is_backup_actif == 1 ]]
 then
-    echo -e "\033[5;42m   WARNING   \033[0m mode backup actif (par défaut) : pour le désactiver, utiliser l'option '$option_disable_backups'" ;
+    echo -e "\033[5;43m   WARNING   \033[0m mode backup actif (par défaut) : pour le désactiver, utiliser l'option '$option_disable_backups'" ;
 
     echo "- Backup du fichier SSH 'id_rsa' (dans répertoire ~/.ssh)"
     cp ~/.ssh/id_rsa ~/.ssh/id_rsa.bkp-$timestamp
