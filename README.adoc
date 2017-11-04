@@ -45,10 +45,10 @@ Chaque profil doit contenir un ensemble de fichiers obligatoires afin qu'il soit
 Au lancement du script (sans aucune option), l'aide s'affichera.
 A la moindre erreur, le script vous guide sur ce qui ne va pas et ce qu'il faut faire pour corriger le pb
 
-== Liste des fichiers obligatoires 'un profil
+== Liste des fichiers obligatoires pour chaque profil
 
 * fichiers SSH :
-** id_rsa : fichier de clé privé pour la connexion au serveur GIT
-** id_rsa.pub : fichier de clé publique pour la connexion au serveur GIT (clé publique déclarée dans la conf du serveur)
+** `id_rsa` : fichier de clé privé pour la connexion au serveur GIT
+** `id_rsa.pub` : fichier de clé publique pour la connexion au serveur GIT (clé publique déclarée dans la conf du serveur)
 * fichier conf GIT :
-** .gitconfig : fichier de conf GIT contenant notamment le nom et le mail du compte GIT
+** `.gitconfig` : fichier de conf GIT contenant notamment le nom et le mail du compte GIT
