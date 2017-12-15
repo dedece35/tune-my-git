@@ -10,10 +10,14 @@
 is_backup_actif=1
 dir_script=`dirname "$0"`
 dir_profil="$dir_script/profiles"
-option_disable_backups="--disable-backups"
+option_disable_backups1="-db"
+option_disable_backups2="--disable-backups"
 option_help1="-h"
 option_help2="--help"
+fic_conf_tunemygit="$dir_script/.tunemygit"
+str_is_profile_from_conf=""
 
+# afficher l'aide du script
 afficherAide() {
     echo ""
     echo " _____                                             ___       _      ";
@@ -30,14 +34,14 @@ afficherAide() {
     echo -e "\nUsage :"
     echo -e "  tune-my-git.sh <OPTIONS> <PROFIL>"
     echo -e "\nOPTIONS : "
-    echo -e "$option_disable_backups : désactive le backup des fichiers remplacées (backup avec extension du type '.bkp-<timestamp>'"
-    echo -e "$option_help1 : affiche l'aide du script"
-    echo -e "$option_help2 : affiche l'aide du script"
-    echo -e "PROFIL : nom du profil à activer"
+    echo -e "$option_disable_backups1, $option_disable_backups2 : désactive le backup des fichiers remplacées (backup avec extension du type '.bkp-<timestamp>'"
+    echo -e "$option_help1, $option_help2 : affiche l'aide du script"
+    echo -e "\nPROFIL : nom du profil à activer (facultatif => si non fourni, alors récupération du profil à activer dans le fichier ${fic_conf_tunemygit}"
     listerProfiles
     exit 1
 }
 
+# lister les profiles disponibles
 listerProfiles() {
     echo -e "\nListe des profils disponibles : "
 
@@ -57,6 +61,7 @@ listerProfiles() {
     echo "$lstProfiles"
 }
 
+# verification que le profile contient les fichiers nécessaires
 verifierProfile() {
 
     if [[ ! -d "$dir_profil" ]]
@@ -109,33 +114,48 @@ then
 fi
 
 profile_cur=$1
-if [[ $# == 2 ]]
-then 
-    if [[ "$1" == "$option_disable_backups" ]]
+
+# verification du profil et de l'option "disable_backup"
+if [[ "$1" == "$option_disable_backups1" || "$1" == "$option_disable_backups2" ]]
+then
+    is_backup_actif=0
+    profile_cur=$2
+else
+    echo -e "\n\033[33;41m   ERREUR   \033[0m L'option '$1' N'est PAS une option valide avec l'utilisation d'un profil"
+    afficherAide
+fi
+
+# recuperation du profil sauvegardée si possible
+if [[ "$profile_cur" == "" ]]
+then
+    if [[ -f "$fic_conf_tunemygit" ]]
     then
-        is_backup_actif=0
-        profile_cur=$2
+        profile_cur=`cat $fic_conf_tunemygit`
+        str_is_profile_from_conf=" (à partir du fichier $fic_conf_tunemygit)"
     else
-        echo -e "\n\033[33;41m   ERREUR   \033[0m L'option '$1' N'est PAS une option valide avec l'utilisation d'un profil"
+        echo -e "\n\033[33;41m   ERREUR   \033[0m Pas de profil fourni en option et pas de fichier de profil courant trouvé ($fic_conf_tunemygit). Merci de passer en paramètre un profil au moins une fois."
         afficherAide
     fi
-fi 
+fi
 
 verifierProfile $profile_cur
 
-echo -e "\nActivation du profil GIT \033[1;43m   '$profile_cur'   \033[0m : "
+# Activation du profil
+echo -e "\nActivation du profil GIT \033[1;43m   '$profile_cur'   \033[0m $str_is_profile_from_conf: "
 
+# ajout répertoire manquant
 if [[ ! -d ~/.ssh ]]
 then
     echo "- Répertoire '.ssh' INEXISTANT => création du répertoire"
     mkdir ~/.ssh
 fi
 
-timestamp=$(awk 'BEGIN {srand(); print srand()}')
-
+# gestion des backups
 if [[ $is_backup_actif == 1 ]]
 then
     echo -e "\033[5;43m   WARNING   \033[0m mode backup actif (par défaut) : pour le désactiver, utiliser l'option '$option_disable_backups'" ;
+
+    timestamp=$(awk 'BEGIN {srand(); print srand()}')
 
     echo "- Backup du fichier SSH 'id_rsa' (dans répertoire ~/.ssh)"
     cp ~/.ssh/id_rsa ~/.ssh/id_rsa.bkp-$timestamp
@@ -146,6 +166,10 @@ then
     echo "- Backup du fichier de conf GIT '.gitconfig' (dans répertoire ~)"
     cp ~/.gitconfig ~/.gitconfig.bkp-$timestamp
 fi
+
+# modification des fichiers suivant le prodil
+echo "- Sauvegarde profil courant dans fichier ${fic_conf_tunemygit}"
+echo "$profile_cur" > "$fic_conf_tunemygit"
 
 echo "- Mise en place du fichier SSH 'id_rsa' du profile '$profile_cur'"
 cp "$dir_script/profiles/$profile_cur/id_rsa" ~/.ssh/.
